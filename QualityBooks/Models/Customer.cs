@@ -4,25 +4,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace QualityBooks.Models
 {
-    public class Customer
+    public class Customer : IdentityUser
     {
-       public int CustomerID { get; set; }
-       [StringLength(50)]
-        public String Lastname { get; set; }
+        [Required]
+        [Display(Name = "Last Name")]
         [StringLength(50)]
+        public String LastName { get; set; }
+
+        [Required]
         [Column("FirstName")]
-        public String FirstMidName { get; set; }
+        [Display(Name = "First Name")]
+        public String FirstName { get; set; }
         
         public String Address { get; set; }
     
         [DataType(DataType.PhoneNumber)]
-        [DisplayFormat(DataFormatString = "{}",ApplyFormatInEditMode = true)]
-        // Need email address as well
-        
+        public string HomeNumber { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string WorkNumber { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string MobileNumber { get; set; }
 
         public ICollection <Order> Orders { get; set; }
     }

@@ -9,9 +9,13 @@ namespace QualityBooks.Models
 {
     public class Category
     {
-        public int CategoryID { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
         public String Name { get; set; }
 
-        public ICollection< Book > Books { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

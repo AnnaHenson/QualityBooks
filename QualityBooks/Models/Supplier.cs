@@ -9,13 +9,28 @@ namespace QualityBooks.Models
 {
     public class Supplier
     {
-        public int SupplierID { get; set; }
-        public String Name { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
+        [Display(Name="SupplierName")]
+        [StringLength(100)]
+        public String SupplierName { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string HomeNumber { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string WorkNumber { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string MobileNumber { get; set; }
+
         [DataType(DataType.EmailAddress)]
-        [DisplayFormat(DataFormatString = "{}", ApplyFormatInEditMode = true)]
-        // need phone number as well
+        public string Email { get; set; }
         
-        public ICollection< Book > Books { get; set; }
+        public ICollection<Book> Books { get; set; }
 
     }
 }
