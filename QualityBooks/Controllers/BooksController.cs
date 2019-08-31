@@ -46,6 +46,8 @@ namespace QualityBooks.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            ViewBag.Suppliers = _context.Suppliers.OrderBy(x => x.SupplierName).Select(x => new SelectListItem{Text = x.SupplierName, Value = x.Id.ToString()}).ToList();
+            ViewBag.Categories = _context.Category.OrderBy(x => x.Name).Select(x => new SelectListItem {Text = x.Name, Value =x.Id.ToString()}).ToList();
             return View();
         }
 
@@ -54,7 +56,7 @@ namespace QualityBooks.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,Image")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,Description,Price,Image,SupplierId,CategoryId")] Book book)
         {
             if (ModelState.IsValid)
             {

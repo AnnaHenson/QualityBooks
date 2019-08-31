@@ -21,13 +21,17 @@ namespace QualityBooks.Models
    
         [DataType(DataType.Currency)]
         [Column(TypeName = "Money")]
+        [Range(minimum:0, maximum:200)]
         public decimal Price { get; set; }
 
-        [Required]
+        
         public Supplier Supplier { get; set; }
+        [Required]
+        public int SupplierId { get; set; } //FK
         public string Image { get; set; }
 
         public Category Category { get; set; }
+        public int CategoryId { get; set; } //FK
 
     }
 }
