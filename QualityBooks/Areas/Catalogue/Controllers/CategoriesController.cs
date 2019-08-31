@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Data;
 using QualityBooks.Models;
 
-namespace QualityBooks.Controllers
+namespace QualityBooks.Areas.Catalogue.Controllers
 {
-    public class SuppliersController : Controller
+    [Area("Catalogue")]
+    public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SuppliersController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Suppliers
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Suppliers.ToListAsync());
+            return View(await _context.Category.ToListAsync());
         }
 
-        // GET: Suppliers/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +31,39 @@ namespace QualityBooks.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
+            var category = await _context.Category
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (supplier == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(category);
         }
 
-        // GET: Suppliers/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Suppliers/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SupplierName,HomeNumber,WorkNumber,MobileNumber,Email")] Supplier supplier)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(supplier);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(category);
         }
 
-        // GET: Suppliers/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +71,22 @@ namespace QualityBooks.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers.SingleOrDefaultAsync(m => m.Id == id);
-            if (supplier == null)
+            var category = await _context.Category.SingleOrDefaultAsync(m => m.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(supplier);
+            return View(category);
         }
 
-        // POST: Suppliers/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SupplierName,HomeNumber,WorkNumber,MobileNumber,Email")] Supplier supplier)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
-            if (id != supplier.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -97,12 +95,12 @@ namespace QualityBooks.Controllers
             {
                 try
                 {
-                    _context.Update(supplier);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierExists(supplier.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +111,10 @@ namespace QualityBooks.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplier);
+            return View(category);
         }
 
-        // GET: Suppliers/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +122,30 @@ namespace QualityBooks.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Suppliers
+            var category = await _context.Category
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (supplier == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(supplier);
+            return View(category);
         }
 
-        // POST: Suppliers/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var supplier = await _context.Suppliers.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Suppliers.Remove(supplier);
+            var category = await _context.Category.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Category.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplierExists(int id)
+        private bool CategoryExists(int id)
         {
-            return _context.Suppliers.Any(e => e.Id == id);
+            return _context.Category.Any(e => e.Id == id);
         }
     }
 }

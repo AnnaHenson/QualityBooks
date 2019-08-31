@@ -18,4 +18,24 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Catalogue\Data\" />
+    <Folder Include="Areas\Catalogue\Models\" />
+    <Folder Include="Areas\ShoppingCart\Controllers\" />
+    <Folder Include="Areas\ShoppingCart\Data\" />
+    <Folder Include="Areas\ShoppingCart\Models\" />
+    <Folder Include="Areas\ShoppingCart\Views\" />
+    <Folder Include="Views\Categories\" />
+    <Folder Include="Views\Suppliers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Catalogue\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Catalogue\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>
