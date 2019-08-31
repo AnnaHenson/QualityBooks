@@ -1,14 +1,25 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using QualityBooks.Data;
 using QualityBooks.Models;
 
 namespace QualityBooks.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
+
+        public HomeController(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public IActionResult Index()
         {
-            
+           ViewBag.Categories= _dbContext.Category.GroupJoin(_dbContext.Books, category => category.Id, book => book.CategoryId,
+                (category, books) => new CategoryWithBookCount(category.Name, books.Count())).ToList();
+
             return View();
         }
 
