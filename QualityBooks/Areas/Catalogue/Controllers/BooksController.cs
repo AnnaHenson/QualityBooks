@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -43,11 +45,24 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         }
 
         // GET: Books/Create
+        
         public IActionResult Create()
         {
-            ViewBag.Suppliers = _context.Suppliers.OrderBy(x => x.SupplierName).Select(x => new SelectListItem{Text = x.SupplierName, Value = x.Id.ToString()}).ToList();
-            ViewBag.Categories = _context.Category.OrderBy(x => x.Name).Select(x => new SelectListItem {Text = x.Name, Value =x.Id.ToString()}).ToList();
+            ViewBag.Suppliers = PopulateSuppliers();
+            ViewBag.Categories = PopulateCategories();
             return View();
+        }
+
+        private SelectList PopulateCategories(int categoryId=0)
+        {
+            var categoryQuery = _context.Category.OrderBy(x => x.Name);
+            return new SelectList(categoryQuery.AsNoTracking(),"Id", "Name", categoryId);
+        }
+
+        private SelectList PopulateSuppliers(int bookSupplierId=0)
+        {
+            var supplierQuery = _context.Suppliers.OrderBy(x => x.SupplierName);
+            return new SelectList(supplierQuery.AsNoTracking(),"Id","SupplierName",bookSupplierId);
         }
 
         // POST: Books/Create
@@ -79,6 +94,9 @@ namespace QualityBooks.Areas.Catalogue.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Suppliers = PopulateSuppliers(book.SupplierId);
+            ViewBag.Categories = PopulateCategories(book.CategoryId);
+
             return View(book);
         }
 
