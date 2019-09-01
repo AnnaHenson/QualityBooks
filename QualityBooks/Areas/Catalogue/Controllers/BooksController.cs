@@ -105,7 +105,7 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Image")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Image,SupplierId,CategoryId")] Book book)
         {
             if (id != book.Id)
             {
