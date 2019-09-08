@@ -20,6 +20,8 @@ namespace QualityBooks.Models.ManageViewModels
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
 
+        public string Address { get; set; }
+
         public string StatusMessage { get; set; }
     }
 }

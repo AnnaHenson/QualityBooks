@@ -21,6 +21,7 @@ namespace QualityBooks.Data
         public DbSet<Category> Category { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Customer>().ToTable("Customer");
