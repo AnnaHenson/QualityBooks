@@ -40,7 +40,7 @@ namespace QualityBooks
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, UserManager<ApplicationUser>userManager)
         {
             if (env.IsDevelopment())
             {
@@ -64,6 +64,14 @@ namespace QualityBooks
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapAreaRoute("catalogue", "catalogue", "{controller=Book}/{action=Index}/{id?}");
             });
+
+            await CreateRoles(serviceProvider);
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //TODO: ANNA put the code here
+            throw new NotImplementedException();
         }
     }
 }
