@@ -13,6 +13,7 @@ namespace QualityBooks.Areas.ShoppingCart.Models
         public string CartID { get; set; }
         public int Count { get; set; }
         public DateTime DateCreated { get; set; }
-        public Book Book { get; set; }    
+        public Book Book { get; set; }
+        public Books Books { get; set; }
     }
 }

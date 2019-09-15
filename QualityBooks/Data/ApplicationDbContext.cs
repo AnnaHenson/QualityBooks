@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Models;
+using Order = QualityBooks.Models.Order;
 
 namespace QualityBooks.Data
 {
@@ -15,11 +17,13 @@ namespace QualityBooks.Data
             : base(options)
         {
         }
+        public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,8 +33,9 @@ namespace QualityBooks.Data
             builder.Entity<Book>().ToTable("Book");
             builder.Entity<Category>().ToTable("Category");
             builder.Entity<Supplier>().ToTable("Supplier");
+            builder.Entity<OrderDetail>().ToTable("OrderDetail");
 
-            builder.Entity<OrderItem>().HasKey(o => new {o.OrderId, o.Id});
+            builder.Entity<OrderDetail>().HasOne(p =>p.Order).WithMany(o =>o.OrderDetails).OnDelete(DeleteBehavior.Cascade);
 
             
             base.OnModelCreating(builder);
