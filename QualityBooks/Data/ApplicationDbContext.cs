@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Models;
-using Order = QualityBooks.Models.Order;
 
 namespace QualityBooks.Data
 {
@@ -24,6 +23,7 @@ namespace QualityBooks.Data
         public DbSet<Category> Category { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

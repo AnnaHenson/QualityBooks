@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Models.Validation;
 
 

@@ -78,8 +78,6 @@ namespace QualityBooks
         }
     
 
-        
-
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -89,50 +87,39 @@ namespace QualityBooks
                 apContext.Database.EnsureCreated();
 
                 //if there is already an administrator role abort.
-                var _roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-                var _userManger = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+                var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+                var userManger = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
                 string[] roleNames = {"Admin", "Member"};
-                IdentityResult roleResult;
 
                 foreach (var roleName in roleNames)
                 {
-                    bool roleExist = _roleManager.RoleExistsAsync(roleName).Result;
+                    bool roleExist = roleManager.RoleExistsAsync(roleName).Result;
                     if (!roleExist)
                     {
-                        roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                        await roleManager.CreateAsync(new IdentityRole(roleName));
                     }
                 }
 
-                var poweruser = new ApplicationUser
+                var powerUser = new ApplicationUser
                 {
                     UserName = Configuration.GetSection("userSettings")["UserEmail"],
                     Email = Configuration.GetSection("UserSettings")["userEmail"],
                     EmailConfirmed = true,
-                    Enabled = true,
-                    Address = "Addmin Address",
+                    Address = "Admin Address",
                     
 
                 };
-                var _userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
-                var test = _userManger.FindByEmailAsync(Configuration.GetSection("userSettings")["UserEmail"]);
+                var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+                var test = userManger.FindByEmailAsync(Configuration.GetSection("userSettings")["UserEmail"]);
                 if (test.Result == null)
                 {
                     string userPassword = Configuration.GetSection("UserSettings")["UserPassword"];
-                    poweruser.EmailConfirmed = true;
-                    var createPowerUser = await _userManager.CreateAsync(poweruser, userPassword);
+                    powerUser.EmailConfirmed = true;
+                    var createPowerUser = await userManager.CreateAsync(powerUser, userPassword);
                     if (createPowerUser.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(poweruser, "Admin");
-                        {
-
-
-                        }
-
-
-                        throw
-
-                            new NotImplementedException();
+                        await userManager.AddToRoleAsync(powerUser, "Admin");
                     }
                 }
             }
