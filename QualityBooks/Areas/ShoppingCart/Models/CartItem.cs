@@ -14,6 +14,5 @@ namespace QualityBooks.Areas.ShoppingCart.Models
         public int Count { get; set; }
         public DateTime DateCreated { get; set; }
         public Book Book { get; set; }
-        public Books Books { get; set; }
     }
 }

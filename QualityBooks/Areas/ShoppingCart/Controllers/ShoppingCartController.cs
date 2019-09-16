@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Operators;
-using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Data;
-using SQLitePCL;
 
-namespace QualityBooks.Controllers
+namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
     public class ShoppingCartController : Controller
     {
@@ -22,7 +16,7 @@ namespace QualityBooks.Controllers
 
         public IActionResult Index()
         {
-            var cart = ShoppingCart.GetCart(this.HttpContext);
+            var cart = Models.ShoppingCart.GetCart(this.HttpContext);
             return View(cart);
 
         }
@@ -31,13 +25,18 @@ namespace QualityBooks.Controllers
         {
             // retrieve album from the database.
             var addedBook = _context.Books.Single(book => book.Id == id);
-            var cart = ShoppingCart.GetCart(this.HttpContext);
+            var cart = Models.ShoppingCart.GetCart(this.HttpContext);
             cart.AddToCart(addedBook, _context);
             // Go back to the main store page for more books
             return RedirectToAction("Index", "Books");
         }
 
-        public ActionResult RemoveFromCart(int id);
+        public ActionResult RemoveFromCart(int id)
+        {
+            var cart = Models.ShoppingCart.GetCart(HttpContext);
+            cart.RemoveFromCart(id, _context);
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
     
 
         

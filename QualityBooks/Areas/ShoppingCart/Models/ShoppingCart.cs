@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Data;
+using QualityBooks.Models;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 
 namespace QualityBooks.Areas.ShoppingCart.Models
@@ -23,14 +24,14 @@ namespace QualityBooks.Areas.ShoppingCart.Models
             return cart;
         }
 
-        public void AddToCart(Books books, ApplicationDbContext db)
+        public void AddToCart(Book book, ApplicationDbContext db)
         {
-            var cartItem = db.CartItems.SingleOrDefault(c => c.CartID == ShoppingCartID && c.Books.ID == books.ID);
+            var cartItem = db.CartItems.SingleOrDefault(c => c.CartID == ShoppingCartID && c.Book.Id == book.Id);
             if (cartItem == null)
             {
                 cartItem = new CartItem
                 {
-                    Books = books,
+                    Book = book,
                     CartID = ShoppingCartID,
                     Count = 1,
                     DateCreated = DateTime.Now
@@ -48,7 +49,7 @@ namespace QualityBooks.Areas.ShoppingCart.Models
 
         public int RemoveFromCart(int id, ApplicationDbContext db)
         {
-            var cartItem = db.CartItems.SingleOrDefault(cart => cart.CartID == ShoppingCartID && cart.Books.ID == id);
+            var cartItem = db.CartItems.SingleOrDefault(cart => cart.CartID == ShoppingCartID && cart.Book.Id == id);
             int itemCount = 0;
             if (cartItem != null)
             {
@@ -81,7 +82,7 @@ namespace QualityBooks.Areas.ShoppingCart.Models
 
         public List<CartItem> GetCartItems(ApplicationDbContext db)
         {
-            List<CartItem> cartItems = db.CartItems.Include(c => c.Books)
+            List<CartItem> cartItems = db.CartItems.Include(c => c.Book)
                 .Where(CartItem => CartItem.CartID == ShoppingCartID).ToList();
             return cartItems;
         }
@@ -96,7 +97,7 @@ namespace QualityBooks.Areas.ShoppingCart.Models
         {
             decimal?
                 total = (from cartItems in db.CartItems where cartItems.CartID == ShoppingCartID 
-                    select(int ?)cartItems.Count * cartItems.Books.Price).Sum();
+                    select(int ?)cartItems.Count * cartItems.Book.Price).Sum();
             return total ?? decimal.Zero;
 
         }
