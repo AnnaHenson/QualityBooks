@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Data;
+using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
@@ -11,16 +15,18 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<ApplicationUser>userManager;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = _userManager;
         }
 
         // GET: ShoppingCart/Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            return View(await _context.Orders.Include(i => i.User).AsNoTracking().ToListAsync());
         }
 
         // GET: ShoppingCart/Orders/Details/5
@@ -54,8 +60,22 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderID,FirstName,LastName,City,PostalCode,Country,Phone,Total,OrderDate,Subtotal,GST,GrandTotal,Status")] Order order)
         {
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
+                ShoppingCart cart = ShoppingCart.GetCart(this.HttpContext);
+                List<CartItem> items = cart.GetCartItems(_context);
+                List<OrderDetail> details = new List<OrderDetail>();
+                foreach(CartItem in items)
+                {
+                    OrderDetail detail = CreateOrderDetailForThisItem(item);
+                    details.Order = order;
+                    _context.Add(detail);
+                }
+                order.User = user;
+                order.OrderDate = DateTime.Today;
+                order.GrandTotal = ShoppingCart.GetCart(this.HttpContext).GetTotal(_context);
+                order.OrderDetails = details;
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
