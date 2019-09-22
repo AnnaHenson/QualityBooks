@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Data;
@@ -15,12 +16,13 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private UserManager<ApplicationUser>userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+
 
         public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = _userManager;
+            _userManager = userManager;
         }
 
         // GET: ShoppingCart/Orders
@@ -29,24 +31,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             return View(await _context.Orders.Include(i => i.User).AsNoTracking().ToListAsync());
         }
 
-        // GET: ShoppingCart/Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .SingleOrDefaultAsync(m => m.OrderID == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
+ 
         // GET: ShoppingCart/Orders/Create
         public IActionResult Create()
         {
@@ -58,79 +43,62 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,FirstName,LastName,City,PostalCode,Country,Phone,Total,OrderDate,Subtotal,GST,GrandTotal,Status")] Order order)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,City,PostalCode,Country,Phone")] Order order)
         {
             ApplicationUser user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                ShoppingCart cart = ShoppingCart.GetCart(this.HttpContext);
+                Models.ShoppingCart cart = Models.ShoppingCart.GetCart(this.HttpContext);
                 List<CartItem> items = cart.GetCartItems(_context);
                 List<OrderDetail> details = new List<OrderDetail>();
-                foreach(CartItem in items)
+                foreach(CartItem item in items)
                 {
                     OrderDetail detail = CreateOrderDetailForThisItem(item);
-                    details.Order = order;
+                    detail.Order = order;
+                    details.Add(detail);
                     _context.Add(detail);
                 }
                 order.User = user;
                 order.OrderDate = DateTime.Today;
-                order.GrandTotal = ShoppingCart.GetCart(this.HttpContext).GetTotal(_context);
+                order.Total = Models.ShoppingCart.GetCart(this.HttpContext).GetTotal(_context);
                 order.OrderDetails = details;
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+                _context.SaveChanges();
+
+                return RedirectToAction("Purchased", new RouteValueDictionary(new {action ="Purchased", id = order.OrderID}));
+                
             }
             return View(order);
         }
 
-        // GET: ShoppingCart/Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        private OrderDetail CreateOrderDetailForThisItem(CartItem item)
+        {
+            OrderDetail detail = new OrderDetail();
+            detail.Quantity = item.Count;
+            detail.Book = item.Book;
+            detail.UnitPrice = item.Book.Price;
+            return detail;
+        }
+        
+       
+        public async  Task<ActionResult> Purchased(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.SingleOrDefaultAsync(m => m.OrderID == id);
+            var order = await _context.Orders.Include(i => i.User).AsNoTracking()
+                .SingleOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
                 return NotFound();
             }
-            return View(order);
-        }
 
-        // POST: ShoppingCart/Orders/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,FirstName,LastName,City,PostalCode,Country,Phone,Total,OrderDate,Subtotal,GST,GrandTotal,Status")] Order order)
-        {
-            if (id != order.OrderID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.OrderID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            var details = _context.OrderDetail.Where(detail => detail.Order.OrderID == order.OrderID)
+                .Include(detail => detail.Book).ToList();
+            order.OrderDetails = details;
+            Models.ShoppingCart.GetCart(this.HttpContext).EmptyCart(_context);
             return View(order);
         }
 
@@ -142,12 +110,17 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
+            var order = await _context.Orders.Include(i => i.User).AsNoTracking()
                 .SingleOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
                 return NotFound();
             }
+
+            var details = _context.OrderDetail.Where(detail => detail.Order.OrderID == order.OrderID)
+                .Include(detail => detail.Book).ToList();
+
+            order.OrderDetails = details;
 
             return View(order);
         }
@@ -163,9 +136,6 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.OrderID == id);
-        }
+       
     }
 }
