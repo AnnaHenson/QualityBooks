@@ -1,4 +1,5 @@
-﻿@model QualityBooks.Areas.ShoppingCart.Models.Order
+﻿@using QualityBooks.Areas.ShoppingCart.Models
+@model QualityBooks.Areas.ShoppingCart.Models.Order
 
 @{
     ViewData["Title"] = "Delete";
@@ -58,6 +59,30 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Book.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Book.Price)</td>
+                    </tr>
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <label>Total:</label>
+                    </td>
+                </tr>
+            </table>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Subtotal)

@@ -47,6 +47,9 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        <div>
+            @await Component.InvokeAsync("ShoppingCartViewModel")
+        </div>
         <footer>
             <p>&copy; 2019 - QualityBooks</p>
         </footer>
