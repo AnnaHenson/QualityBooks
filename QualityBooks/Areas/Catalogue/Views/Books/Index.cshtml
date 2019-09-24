@@ -47,6 +47,12 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+            <td>
+                <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.Id">
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                    Add To Cart
+                </a>
+            </td>
         </tr>
 }
     </tbody>

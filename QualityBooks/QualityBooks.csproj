@@ -23,6 +23,7 @@
     <Folder Include="Areas\Catalogue\Data\" />
     <Folder Include="Areas\Catalogue\Models\" />
     <Folder Include="Areas\ShoppingCart\Data\" />
+    <Folder Include="Areas\ShoppingCart\Views\Shared\" />
     <Folder Include="Areas\ShoppingCart\Views\ShoppingCart\" />
     <Folder Include="Views\Categories\" />
     <Folder Include="Views\Suppliers\" />

@@ -77,6 +77,7 @@ namespace QualityBooks
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapAreaRoute("catalogue", "catalogue", "{controller=Book}/{action=Index}/{id?}");
+                routes.MapAreaRoute("shoppingcart", "shoppingcart", "{controller=Order}/{action=Index}/{id?}");
             });
 
             await CreateRoles(serviceProvider);

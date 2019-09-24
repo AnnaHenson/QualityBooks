@@ -20,7 +20,8 @@ namespace QualityBooks.Areas.ShoppingCart.Models
         public string Country { get; set; }
         public string Phone { get; set; }
         public decimal Total { get; set; }
-        public System.DateTime OrderDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        public DateTime OrderDate { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public ApplicationUser User { get; set; }
 

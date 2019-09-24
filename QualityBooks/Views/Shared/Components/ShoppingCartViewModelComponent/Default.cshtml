@@ -11,33 +11,34 @@
         </div>
         <div class="col-sm-2">
             <h4 class="display-4">Quantity</h4>
-            <div class="col-sm-2">
-                <h4 class="display-4">Price</h4>
-            </div>       
         </div>
+        <div class="col-sm-2">
+            <h4 class="display-4">Price</h4>
+        </div> 
+    </div>
+        
         @foreach (var item in Model.CartItems)
         {
             <div class="row">
                 <div class="col-sm-2"><a asp-action="Details" asp-route-id="@item.Book.Id">@item.Book.Title</a></div>
                 <div class="col-sm-2">@item.Count <a asp-action="RemoveFromCart" asp-controller="ShoppingCart" asp-route-id="@item.Book.Id"><span class="glyphicon glyphicon-remove-circle"></span></a></div>
-                <div class="col-sm-2">$@item.Book.Price</div>
+                <div class="col-sm-2">$@item.Book.Price.ToString("F")</div>
             </div>
         }
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-2">GrandTotal:</div>
             
-            <div class="col-sm-2">$@Model.CartTotal</div>
+            <div class="col-sm-2">$@Model.CartTotal.ToString("F")</div>
         </div>
         @if (@Model.CartItems.Count > 0)
         {
             <div class="row">
                 <div class="col-sm-offset-4">
-                    <a asp-action="Create" asp-controller="Orders">
+                    <a asp-area="ShoppingCart" asp-action="Create" asp-controller="Orders">
                         Proceed to checkout <span class="glyphicon glyphicon-step-forward"></span>
                     </a>
                 </div>
             </div>
         }
     </div>
-</div>

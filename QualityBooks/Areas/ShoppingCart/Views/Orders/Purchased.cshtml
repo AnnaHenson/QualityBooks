@@ -51,12 +51,6 @@
             @Html.DisplayFor(model => model.Phone)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.OrderDate)
         </dt>
         <dd>
@@ -66,18 +60,14 @@
             <table class="table">
                 <tr>
                     <th>Book</th>
-                    <th>Date</th>
                     <th>Quantity</th>
-                    <th>unitPrice</th>
+                    <th>Unit Price</th>
                 </tr>
                 @foreach (var item in Model.OrderDetails)
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Book)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Order)
+                            @Html.DisplayFor(modelItem => item.Book.Title)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Quantity)
@@ -89,24 +79,17 @@
                 }
                 <tr>
                     <td></td>
-                    <td></td>
                     <td>
                         <label>Total:</label>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.GrandTotal)
+                        @Html.DisplayFor(modelItem => Model.Total)
                     </td>
                 </tr>
             </table>
         </dd>
         
-        <dt>
-            @Html.DisplayNameFor(model => model.Subtotal)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Subtotal)
-        </dd>
-        <dt>
+       <dt>
             @Html.DisplayNameFor(model => model.GST)
         </dt>
         <dd>

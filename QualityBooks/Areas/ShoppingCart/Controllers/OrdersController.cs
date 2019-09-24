@@ -13,7 +13,7 @@ using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
-    
+    [Area("ShoppingCart")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +23,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            
+            _userManager = userManager;
         }
 
         // GET: ShoppingCart/Orders
@@ -65,6 +65,8 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
                 order.User = user;
                 order.OrderDate = DateTime.Today;
                 order.Total = Models.ShoppingCart.GetCart(this.HttpContext).GetTotal(_context);
+                order.GST = order.Total * (decimal) 0.15;
+                order.GrandTotal = order.Total + order.GST;
                 order.OrderDetails = details;
                 
                 _context.SaveChanges();
