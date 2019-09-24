@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using QualityBooks.Areas.ShoppingCart.Models;
 using QualityBooks.Data;
 using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
-    [Area("ShoppingCart")]
+    
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,21 +23,24 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
+            
         }
 
         // GET: ShoppingCart/Orders
+        
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.Include(i => i.User).AsNoTracking().ToListAsync());
+            return View(await _context.Orders.ToListAsync());
         }
 
  
         // GET: ShoppingCart/Orders/Create
+
         public IActionResult Create()
         {
             return View();
         }
+
 
         // POST: ShoppingCart/Orders/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
