@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -13,6 +14,7 @@ using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
+    [Authorize(Roles = "Admin, Member")]
     [Area("ShoppingCart")]
     public class OrdersController : Controller
     {
@@ -27,7 +29,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         }
 
         // GET: ShoppingCart/Orders
-        
+        [Authorize(Roles = "Admin, Member")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Orders.ToListAsync());
@@ -35,7 +37,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
 
  
         // GET: ShoppingCart/Orders/Create
-
+        [Authorize(Roles = "Member")]
         public IActionResult Create()
         {
             return View();
@@ -47,6 +49,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Create([Bind("FirstName,LastName,City,PostalCode,Country,Phone")] Order order)
         {
             ApplicationUser user = await _userManager.GetUserAsync(User);
@@ -109,6 +112,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         }
 
         // GET: ShoppingCart/Orders/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,6 +138,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         // POST: ShoppingCart/Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(m => m.OrderID == id);

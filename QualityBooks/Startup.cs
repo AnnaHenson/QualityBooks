@@ -51,10 +51,10 @@ namespace QualityBooks
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider,
-            UserManager<ApplicationUser> userManager)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ApplicationDbContext db)
 
         {
+            db.Database.Migrate();
             app.UseSession();
             if (env.IsDevelopment())
             {
