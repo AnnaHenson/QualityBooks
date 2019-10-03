@@ -50,7 +50,6 @@
         @RenderBody()
         <hr />
         <div>
-            @await Component.InvokeAsync("ShoppingCartViewModelComponent")
             @if (!User.IsInRole("Admin"))
             {
                 @await Component.InvokeAsync("ShoppingCartViewModelComponent")

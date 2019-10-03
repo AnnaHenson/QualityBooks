@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using QualityBooks.Models;
 namespace QualityBooks.Areas.Catalogue.Controllers
 {
     [Area("Catalogue")]
+    [Authorize(Roles= "Admin")]
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,12 +22,14 @@ namespace QualityBooks.Areas.Catalogue.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Books
         public async Task<IActionResult> Index()
         {
             return View(await _context.Books.ToListAsync());
         }
 
+        [AllowAnonymous]
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
