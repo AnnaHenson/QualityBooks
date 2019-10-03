@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QualityBooks.Areas.ShoppingCart.Models;
@@ -14,7 +15,7 @@ using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
-    [Authorize(Roles = "Admin, Member")]
+    [Authorize(Roles = "Admin")]
     [Area("ShoppingCart")]
     public class OrdersController : Controller
     {
@@ -35,7 +36,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             return View(await _context.Orders.ToListAsync());
         }
 
- 
+
         // GET: ShoppingCart/Orders/Create
         [Authorize(Roles = "Member")]
         public IActionResult Create()
@@ -50,7 +51,8 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Member")]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,City,PostalCode,Country,Phone")] Order order)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,City,PostalCode,Country,Phone")]
+            Order order)
         {
             ApplicationUser user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
@@ -58,25 +60,28 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
                 Models.ShoppingCart cart = Models.ShoppingCart.GetCart(this.HttpContext);
                 List<CartItem> items = cart.GetCartItems(_context);
                 List<OrderDetail> details = new List<OrderDetail>();
-                foreach(CartItem item in items)
+                foreach (CartItem item in items)
                 {
                     OrderDetail detail = CreateOrderDetailForThisItem(item);
                     detail.Order = order;
                     details.Add(detail);
                     _context.Add(detail);
                 }
+
                 order.User = user;
                 order.OrderDate = DateTime.Today;
                 order.Total = Models.ShoppingCart.GetCart(this.HttpContext).GetTotal(_context);
                 order.GST = order.Total * (decimal) 0.15;
                 order.GrandTotal = order.Total + order.GST;
                 order.OrderDetails = details;
-                
+
                 _context.SaveChanges();
 
-                return RedirectToAction("Purchased", new RouteValueDictionary(new {action ="Purchased", id = order.OrderID}));
-                
+                return RedirectToAction("Purchased",
+                    new RouteValueDictionary(new {action = "Purchased", id = order.OrderID}));
+
             }
+
             return View(order);
         }
 
@@ -88,9 +93,9 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             detail.UnitPrice = item.Book.Price;
             return detail;
         }
-        
-       
-        public async  Task<ActionResult> Purchased(int? id)
+
+
+        public async Task<ActionResult> Purchased(int? id)
         {
             if (id == null)
             {
@@ -143,10 +148,26 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         {
             var order = await _context.Orders.SingleOrDefaultAsync(m => m.OrderID == id);
             _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["BookUsed"] =
+                    "The book being deleted has been used in previous orders.Delete those orders before trying again.";
+                return RedirectToAction("Delete");
+            }
 
-       
+            return RedirectToAction("Index");
+        }
     }
 }
+            
+            
+        
+        
+        
+    
+    
+

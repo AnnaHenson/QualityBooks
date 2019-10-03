@@ -28,7 +28,7 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             var cart = Models.ShoppingCart.GetCart(this.HttpContext);
             cart.AddToCart(addedBook, _context);
             // Go back to the main store page for more books
-            return RedirectToAction("Index", "Books");
+            return RedirectToAction("Index", "MemberBook");
         }
 
         public ActionResult RemoveFromCart(int id)
