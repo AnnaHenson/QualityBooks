@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<QualityBooks.Areas.ShoppingCart.Models.Order>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Orders";
 }
 
-<h2>Index</h2>
+<h2>Orders</h2>
 
 
 <table class="table">
@@ -33,9 +33,6 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.OrderDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Subtotal)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.GST)
@@ -77,9 +74,6 @@
                 @Html.DisplayFor(modelItem => item.OrderDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Subtotal)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.GST)
             </td>
             <td>
@@ -91,10 +85,10 @@
             <td>
                 
                 <a asp-action="Delete" asp-route-id="@item.OrderID">Delete</a>
+                <a asp-action="ChangeStatus" asp-route-id="@item.OrderID">Shipped</a>
+
             </td>
-            <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.OrderID"></a>
-            <span class="glyphicon glyphicon-shopping-cart"></Span>
-         Add To Cart         
+            
         </tr>
 }
     </tbody>

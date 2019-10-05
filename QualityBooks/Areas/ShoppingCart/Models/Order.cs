@@ -27,10 +27,6 @@ namespace QualityBooks.Areas.ShoppingCart.Models
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "Money")]
-        public decimal Subtotal { get; set; }
-
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "Money")]
         public decimal GST { get; set; }
 
         [DataType(DataType.Currency)]

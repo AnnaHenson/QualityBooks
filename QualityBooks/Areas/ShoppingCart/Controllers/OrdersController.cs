@@ -15,7 +15,6 @@ using QualityBooks.Models;
 
 namespace QualityBooks.Areas.ShoppingCart.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Area("ShoppingCart")]
     public class OrdersController : Controller
     {
@@ -148,17 +147,27 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
         {
             var order = await _context.Orders.SingleOrDefaultAsync(m => m.OrderID == id);
             _context.Orders.Remove(order);
-            try
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> ChangeStatus(int id)
+        {
+            if (id == 0)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateException)
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderID == id);
+            if(order == null)
             {
-                TempData["BookUsed"] =
-                    "The book being deleted has been used in previous orders.Delete those orders before trying again.";
-                return RedirectToAction("Delete");
+                return NotFound();
             }
 
+            order.Status = OrderStatus.Shipped;
+       
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
     }

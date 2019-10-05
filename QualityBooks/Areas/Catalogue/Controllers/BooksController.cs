@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -164,7 +165,16 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         {
             var book = await _context.Books.SingleOrDefaultAsync(m => m.Id == id);
             _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                TempData["BookUsed"] =
+                    "The book being deleted has been used in previous orders. Delete those orders before trying again.";
+                return RedirectToAction("Delete");
+            }
             return RedirectToAction(nameof(Index));
         }
 
