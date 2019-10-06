@@ -4,9 +4,11 @@
     {
         public string CategoryName { get; }
         public int BookCount { get; }
+        public int CategoryId { get; }
 
-        public CategoryWithBookCount(string categoryName, int bookCount)
+        public CategoryWithBookCount(int categoryId, string categoryName, int bookCount)
         {
+            CategoryId = categoryId;
             CategoryName = categoryName;
             BookCount = bookCount;
         }

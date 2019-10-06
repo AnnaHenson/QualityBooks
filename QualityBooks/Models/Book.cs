@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace QualityBooks.Models
 {
@@ -29,7 +30,9 @@ namespace QualityBooks.Models
         [Required]
         public int SupplierId { get; set; } //FK
         public string Image { get; set; }
-
+        [NotMapped] 
+        public IFormFile BookImage { get; set; }
+  
         public Category Category { get; set; }
         public int CategoryId { get; set; } //FK
 

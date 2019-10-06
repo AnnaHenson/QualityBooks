@@ -51,7 +51,7 @@
         <ul class="list-group">
             @foreach (var item in ViewBag.Categories)
             {
-                <li class="list-group-item d-flex justify-content-between align-items-center"><a href="">@item.CategoryName</a>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><a asp-controller="Books", asp-action="IndexByCategory", asp-route-categoryId="@item.CategoryId">@item.CategoryName</a>
                     <span class="badge badge-primary badge-pill">@item.BookCount</span>
                     </li>
             }

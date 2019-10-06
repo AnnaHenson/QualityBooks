@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QualityBooks.Data;
 using QualityBooks.Models;
+using Remotion.Linq.Clauses;
 
 namespace QualityBooks.Areas.Catalogue.Controllers
 {
@@ -17,17 +20,42 @@ namespace QualityBooks.Areas.Catalogue.Controllers
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public BooksController(ApplicationDbContext context)
+        public BooksController(ApplicationDbContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [AllowAnonymous]
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Books.ToListAsync());
+            
+
+            var books = from b in _context.Books select b;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (Decimal.TryParse(searchString, out var price))
+                {
+                    books = books.Where(b => b.Price == price);
+                }
+                else
+                {
+                    books = books.Where(b => b.Title.Contains(searchString));
+                }
+            }
+            return View(books.AsNoTracking());
+        }
+        
+        [AllowAnonymous]
+        // GET: Books
+        public async Task<IActionResult> IndexByCategory(int categoryId)
+        {
+            var books = from b in _context.Books where b.CategoryId == categoryId select b;
+
+            return View("Index", books.AsNoTracking());
         }
 
         [AllowAnonymous]
@@ -75,10 +103,26 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Price,Image,SupplierId,CategoryId")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,Description,Price,Image,SupplierId,CategoryId,BookImage")] Book book)
         {
             if (ModelState.IsValid)
             {
+                if (book.BookImage != null && book.BookImage.Length > 0)
+                {
+                    var imagePath = _env.WebRootPath + "\\images\\Books\\";
+                    if (!Directory.Exists(imagePath))
+                    {
+                        Directory.CreateDirectory(imagePath);
+                    }
+                    var fileName = imagePath + book.BookImage.FileName;
+                    using (var stream = new FileStream(fileName, FileMode.Create))
+                    {
+                        await book.BookImage.CopyToAsync(stream);
+                        book.Image = "~/images/Books/" + book.BookImage.FileName;
+                    }
+
+                }
+
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
