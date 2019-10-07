@@ -32,6 +32,8 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Books" asp-action="Index">Books</a></li>
+                    <li><a asp-action="Contact" asp-controller="Home">Contact</a></li>
+                    <li><a asp-action="About" asp-controller="Home">About</a></li>
                     @if (User.IsInRole("Admin"))
                     {
                         <li><a asp-area="" asp-controller="Categories" asp-action="Index">Categories</a></li>
