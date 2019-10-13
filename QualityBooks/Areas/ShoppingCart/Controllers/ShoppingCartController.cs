@@ -37,6 +37,13 @@ namespace QualityBooks.Areas.ShoppingCart.Controllers
             cart.RemoveFromCart(id, _context);
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
+        public ActionResult ClearCart()
+        {
+            var cart = Models.ShoppingCart.GetCart(HttpContext);
+            cart.EmptyCart(_context);
+            return RedirectToAction("Index", "Books");
+        }
     
 
         

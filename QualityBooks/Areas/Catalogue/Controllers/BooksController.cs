@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MailKit.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -30,9 +31,19 @@ namespace QualityBooks.Areas.Catalogue.Controllers
 
         [AllowAnonymous]
         // GET: Books
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? pageNumber)
         {
-            
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+
+            }
+
+            ViewData["CurrentFilter"] = searchString;
 
             var books = from b in _context.Books select b;
             if (!String.IsNullOrEmpty(searchString))
@@ -46,7 +57,9 @@ namespace QualityBooks.Areas.Catalogue.Controllers
                     books = books.Where(b => b.Title.Contains(searchString));
                 }
             }
-            return View(books.AsNoTracking());
+
+            int pageSize = 3;
+            return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
         
         [AllowAnonymous]
@@ -54,8 +67,8 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         public async Task<IActionResult> IndexByCategory(int categoryId)
         {
             var books = from b in _context.Books where b.CategoryId == categoryId select b;
-
-            return View("Index", books.AsNoTracking());
+            int pageSize = 3;
+            return View("Index", await PaginatedList<Book>.CreateAsync(books.AsNoTracking(),1, pageSize));
         }
 
         [AllowAnonymous]

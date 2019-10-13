@@ -29,6 +29,11 @@ namespace QualityBooks
             }
         }
 
+        public bool HasNextPage
+        {
+            get { return (PageIndex < TotalPages); }
+        }
+
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageindex, int pageSize)
         {
             var count = await source.CountAsync();

@@ -7,6 +7,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="3.0.415" />
     <PackageReference Include="MailKit" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.3" PrivateAssets="All" />
@@ -22,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Areas\Catalogue\Data\" />
     <Folder Include="Areas\Catalogue\Models\" />
-    <Folder Include="Areas\ShoppingCart\Data\" />
     <Folder Include="Areas\ShoppingCart\Views\Shared\" />
     <Folder Include="Areas\ShoppingCart\Views\ShoppingCart\" />
     <Folder Include="Views\Categories\" />
