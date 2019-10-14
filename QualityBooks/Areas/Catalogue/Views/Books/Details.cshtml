@@ -32,13 +32,24 @@
             @Html.DisplayNameFor(model => model.Supplier)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Supplier)
+            @Html.DisplayFor(model => model.Supplier.SupplierName)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="@Href(Model.Image)" class="img-thumbnail" style="width: 500px;height:225px"/>
+            }
+            else
+            {
+                <svg class="bd-placeholder-img card-img-top" width="500px" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+                    <title>Placeholder</title>
+                    <rect with="100%" height="100%" fill="#55595c"></rect>
+                    <text x="40%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                </svg>
+            }
         </dd>
     </dl>
 </div>

@@ -80,7 +80,7 @@ namespace QualityBooks.Areas.Catalogue.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books
+            var book = await _context.Books.Include(b => b.Supplier)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
@@ -120,27 +120,32 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (book.BookImage != null && book.BookImage.Length > 0)
-                {
-                    var imagePath = _env.WebRootPath + "\\images\\Books\\";
-                    if (!Directory.Exists(imagePath))
-                    {
-                        Directory.CreateDirectory(imagePath);
-                    }
-                    var fileName = imagePath + book.BookImage.FileName;
-                    using (var stream = new FileStream(fileName, FileMode.Create))
-                    {
-                        await book.BookImage.CopyToAsync(stream);
-                        book.Image = "~/images/Books/" + book.BookImage.FileName;
-                    }
-
-                }
+                await SaveImage(book);
 
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
+        }
+
+        private async Task SaveImage(Book book)
+        {
+            if (book.BookImage != null && book.BookImage.Length > 0)
+            {
+                var imagePath = _env.WebRootPath + "\\images\\Books\\";
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }
+
+                var fileName = imagePath + book.BookImage.FileName;
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    await book.BookImage.CopyToAsync(stream);
+                    book.Image = "~/images/Books/" + book.BookImage.FileName;
+                }
+            }
         }
 
         // GET: Books/Edit/5
@@ -167,7 +172,7 @@ namespace QualityBooks.Areas.Catalogue.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Image,SupplierId,CategoryId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,BookImage,SupplierId,CategoryId")] Book book)
         {
             if (id != book.Id)
             {
@@ -178,6 +183,7 @@ namespace QualityBooks.Areas.Catalogue.Controllers
             {
                 try
                 {
+                    await SaveImage(book);
                     _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
