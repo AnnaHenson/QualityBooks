@@ -13,14 +13,18 @@ namespace QualityBooks.Areas.ShoppingCart.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderID { get; set; }
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
         public string City { get; set; }
+        [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public string Phone { get; set; }
         public decimal Total { get; set; }
         [DisplayFormat(DataFormatString = "{0:d}")]
+        [Display(Name = "Order Date")]
         public DateTime OrderDate { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public ApplicationUser User { get; set; }
@@ -31,6 +35,8 @@ namespace QualityBooks.Areas.ShoppingCart.Models
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "Money")]
+
+        [Display(Name = "Grand Total")]
         public decimal GrandTotal { get; set; }
 
         [Required]
