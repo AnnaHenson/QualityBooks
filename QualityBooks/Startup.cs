@@ -111,26 +111,30 @@ namespace QualityBooks
                     }
                 }
 
-                var powerUser = new ApplicationUser
-                {
-                    UserName = Configuration.GetSection("userSettings")["UserEmail"],
-                    Email = Configuration.GetSection("UserSettings")["userEmail"],
-                    EmailConfirmed = true,
-                    Address = "Admin Address",
-                    
+                await AddUser(serviceScope, userManger, Configuration.GetSection("AdminUserSettings")["UserEmail"], "Admin Address", Configuration.GetSection("AdminUserSettings")["UserPassword"], "Admin");
+                await AddUser(serviceScope, userManger, Configuration.GetSection("userSettings")["UserEmail"], "Customer Address", Configuration.GetSection("UserSettings")["UserPassword"], "Member");
+            }
+        }
 
-                };
-                var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
-                var test = userManger.FindByEmailAsync(Configuration.GetSection("userSettings")["UserEmail"]);
-                if (test.Result == null)
+        private async Task AddUser(IServiceScope serviceScope, UserManager<ApplicationUser> userManger, string userName, string address, string password, string role)
+        {
+            var powerUser = new ApplicationUser
+            {
+                UserName = userName,
+                Email = userName,
+                EmailConfirmed = true,
+                Address = address,
+            };
+            var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+            var test = userManger.FindByEmailAsync(userName);
+            if (test.Result == null)
+            {
+                string userPassword = password;
+                powerUser.EmailConfirmed = true;
+                var createPowerUser = await userManager.CreateAsync(powerUser, userPassword);
+                if (createPowerUser.Succeeded)
                 {
-                    string userPassword = Configuration.GetSection("UserSettings")["UserPassword"];
-                    powerUser.EmailConfirmed = true;
-                    var createPowerUser = await userManager.CreateAsync(powerUser, userPassword);
-                    if (createPowerUser.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(powerUser, "Admin");
-                    }
+                    await userManager.AddToRoleAsync(powerUser, role);
                 }
             }
         }
