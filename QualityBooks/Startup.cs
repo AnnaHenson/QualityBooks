@@ -122,7 +122,9 @@ namespace QualityBooks
                 Email = userName,
                 EmailConfirmed = true,
                 Address = address,
-                HomePhone = "123-1234"
+                HomePhone = "123-1234",
+                LockoutEnabled = false,
+                Enabled = true
             };
             var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
             var test = userManger.FindByEmailAsync(userName);
@@ -135,6 +137,7 @@ namespace QualityBooks
                 {
                     await userManager.AddToRoleAsync(powerUser, role);
                 }
+               
             }
         }
     }
