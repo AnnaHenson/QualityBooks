@@ -69,7 +69,8 @@ namespace QualityBooks.Controllers
                 MobilePhone = user.MobilePhone,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage,
-                Address = user.Address
+                Address = user.Address,
+                Name = user.Name
             };
 
             var orders = _context.Orders.Where(x => x.User == user).ToList();
@@ -106,6 +107,7 @@ namespace QualityBooks.Controllers
             user.HomePhone = model.HomePhone;
             user.WorkPhone = model.WorkPhone;
             user.MobilePhone = model.MobilePhone;
+            user.Name = model.Name;
 
             await _userManager.UpdateAsync(user);
 

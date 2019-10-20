@@ -109,15 +109,16 @@ namespace QualityBooks
                     }
                 }
 
-                await AddUser(serviceScope, userManger, Configuration.GetSection("AdminUserSettings")["UserEmail"], "Admin Address", Configuration.GetSection("AdminUserSettings")["UserPassword"], "Admin");
-                await AddUser(serviceScope, userManger, Configuration.GetSection("userSettings")["UserEmail"], "Customer Address", Configuration.GetSection("UserSettings")["UserPassword"], "Member");
+                await AddUser(serviceScope, userManger, "admin", Configuration.GetSection("AdminUserSettings")["UserEmail"], "Admin Address", Configuration.GetSection("AdminUserSettings")["UserPassword"], "Admin");
+                await AddUser(serviceScope, userManger, "user", Configuration.GetSection("userSettings")["UserEmail"], "Customer Address", Configuration.GetSection("UserSettings")["UserPassword"], "Member");
             }
         }
 
-        private async Task AddUser(IServiceScope serviceScope, UserManager<ApplicationUser> userManger, string userName, string address, string password, string role)
+        private async Task AddUser(IServiceScope serviceScope, UserManager<ApplicationUser> userManger, string name, string userName, string address, string password, string role)
         {
             var powerUser = new ApplicationUser
             {
+                Name = name,
                 UserName = userName,
                 Email = userName,
                 EmailConfirmed = true,

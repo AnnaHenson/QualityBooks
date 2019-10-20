@@ -12,6 +12,10 @@
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control"/>
+            </div>
+            <div class="form-group">
                 <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control" disabled/>
             </div>
@@ -42,7 +46,8 @@
                 <label asp-for="WorkPhone"></label>
                 <input asp-for="WorkPhone" class="form-control"/>
                 <span asp-validation-for="WorkPhone" class="text-danger"></span>
-            </div><div class="form-group">
+            </div>
+            <div class="form-group">
                 <label asp-for="MobilePhone"></label>
                 <input asp-for="MobilePhone" class="form-control"/>
                 <span asp-validation-for="MobilePhone" class="text-danger"></span>

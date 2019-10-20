@@ -241,7 +241,7 @@ namespace QualityBooks.Controllers
                 var user = new ApplicationUser
                 {
                     UserName = model.Email, Email = model.Email, Address = model.Address, HomePhone = model.HomePhone,
-                    WorkPhone = model.WorkPhone, MobilePhone = model.MobilePhone
+                    WorkPhone = model.WorkPhone, MobilePhone = model.MobilePhone, Name = model.Name
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

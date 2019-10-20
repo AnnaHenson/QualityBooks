@@ -99,7 +99,7 @@ namespace QualityBooks.Areas.Catalogue.Controllers
             return View();
         }
 
-        private SelectList PopulateCategories(int categoryId=0)
+        private SelectList PopulateCategories(int categoryId=1)
         {
             var categoryQuery = _context.Category.OrderBy(x => x.Name);
             return new SelectList(categoryQuery.AsNoTracking(),"Id", "Name", categoryId);

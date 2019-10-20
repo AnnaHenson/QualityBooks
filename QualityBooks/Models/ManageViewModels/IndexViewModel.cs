@@ -35,5 +35,8 @@ namespace QualityBooks.Models.ManageViewModels
         public string Address { get; set; }
 
         public string StatusMessage { get; set; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }
