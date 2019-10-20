@@ -238,7 +238,11 @@ namespace QualityBooks.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {UserName = model.Email, Email = model.Email, Address = model.Address};
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email, Email = model.Email, Address = model.Address, HomePhone = model.HomePhone,
+                    WorkPhone = model.WorkPhone, MobilePhone = model.MobilePhone
+                };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

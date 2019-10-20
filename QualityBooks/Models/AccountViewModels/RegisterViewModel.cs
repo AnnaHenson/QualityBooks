@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Spatial;
 using System.Threading.Tasks;
+using QualityBooks.Models.Validation;
 
 namespace QualityBooks.Models.AccountViewModels
 {
@@ -29,6 +30,16 @@ namespace QualityBooks.Models.AccountViewModels
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [Display(Name="Address")]
         public string Address { get; set; }
+
+        [Display(Name="Home Phone")]
+        [RequireOnePhoneNumberCustomer]
+        public string HomePhone { get; set; }
+        [Display(Name="Work Phone")]
+        [RequireOnePhoneNumberCustomer]
+        public string WorkPhone { get; set; }
+        [Display(Name="Mobile Phone")]
+        [RequireOnePhoneNumberCustomer]
+        public string MobilePhone { get; set; }
     }
 
 }

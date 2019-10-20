@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QualityBooks.Areas.ShoppingCart.Data;
 using QualityBooks.Data;
+using Serilog;
+using Serilog.Events;
 
 namespace QualityBooks
 {
@@ -17,6 +19,12 @@ namespace QualityBooks
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File("log.txt")
+                .CreateLogger();
             var host = BuildWebHost(args);
             using (var scope = host.Services.CreateScope())
             {
@@ -24,7 +32,7 @@ namespace QualityBooks
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    DbInitializer.Initialize(context);
+                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
 
@@ -39,6 +47,7 @@ namespace QualityBooks
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseSerilog()
                 .Build();
     }
 }

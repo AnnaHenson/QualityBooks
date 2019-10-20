@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using QualityBooks.Models.Validation;
 
 namespace QualityBooks.Models.ManageViewModels
 {
@@ -17,8 +18,19 @@ namespace QualityBooks.Models.ManageViewModels
         public string Email { get; set; }
 
         [Phone]
-        [Display(Name = "Phone number")]
-        public string PhoneNumber { get; set; }
+        [Display(Name = "Home phone number")]
+        [RequireOnePhoneNumberCustomerIndex]
+        public string HomePhone { get; set; }
+
+        [Phone]
+        [Display(Name = "Work phone number")]
+        [RequireOnePhoneNumberCustomerIndex]
+        public string WorkPhone { get; set; }
+
+        [Phone]
+        [Display(Name = "Mobile phone number")]
+        [RequireOnePhoneNumberCustomerIndex]
+        public string MobilePhone { get; set; }
 
         public string Address { get; set; }
 

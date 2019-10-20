@@ -54,7 +54,7 @@ namespace QualityBooks
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ApplicationDbContext db)
 
         {
-            db.Database.Migrate();
+           // db.Database.Migrate();
             app.UseSession();
             if (env.IsDevelopment())
             {
@@ -81,9 +81,7 @@ namespace QualityBooks
             });
 
             await CreateRoles(serviceProvider);
-            {
-                
-            }
+           
 
         }
     
@@ -124,6 +122,7 @@ namespace QualityBooks
                 Email = userName,
                 EmailConfirmed = true,
                 Address = address,
+                HomePhone = "123-1234"
             };
             var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
             var test = userManger.FindByEmailAsync(userName);

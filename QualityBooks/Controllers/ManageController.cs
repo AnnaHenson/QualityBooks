@@ -64,7 +64,9 @@ namespace QualityBooks.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
+                HomePhone = user.HomePhone,
+                WorkPhone = user.WorkPhone,
+                MobilePhone = user.MobilePhone,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage,
                 Address = user.Address
@@ -101,16 +103,13 @@ namespace QualityBooks.Controllers
                 }
             }
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
-            }
+            user.HomePhone = model.HomePhone;
+            user.WorkPhone = model.WorkPhone;
+            user.MobilePhone = model.MobilePhone;
 
+            await _userManager.UpdateAsync(user);
+
+            
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
         }
