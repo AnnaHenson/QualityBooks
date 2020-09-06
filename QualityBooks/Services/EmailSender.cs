@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 
@@ -13,7 +8,7 @@ namespace QualityBooks.Services
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
+        public void SendEmail(string email, string subject, string message)
         {
             var mes = new MimeMessage();
             var MyName = "Anna Henson";
@@ -38,7 +33,6 @@ namespace QualityBooks.Services
                 client.Disconnect(true);
             }
             // plug in your email service here to send an email.
-            return Task.CompletedTask;
         }
     }
 
